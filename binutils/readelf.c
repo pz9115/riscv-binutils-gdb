@@ -3572,6 +3572,10 @@ get_machine_flags (Filedata * filedata, unsigned e_flags, unsigned e_machine)
 	    case EF_RISCV_FLOAT_ABI_QUAD:
 	      strcat (buf, ", quad-float ABI");
 	      break;
+
+	    case EF_RISCV_ZFINX_ABI:
+	      strcat (buf, ", zfinx ABI");
+	      break;
 	    }
 	  break;
 

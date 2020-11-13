@@ -2582,7 +2582,7 @@ riscv_reloc_type_class (const struct bfd_link_info *info ATTRIBUTE_UNUSED,
 }
 
 /* Given the ELF header flags in FLAGS, it returns a string that describes the
-   float ABI.  */
+   float ABI and the Zfinx ABI.  */
 
 static const char *
 riscv_float_abi_string (flagword flags)
@@ -2600,6 +2600,9 @@ riscv_float_abi_string (flagword flags)
       break;
     case EF_RISCV_FLOAT_ABI_QUAD:
       return "quad-float";
+      break;
+    case EF_RISCV_ZFINX_ABI:
+      return "zfinx";
       break;
     default:
       abort ();
