@@ -1421,11 +1421,11 @@ riscv_parse_prefixed_ext (riscv_parse_subset_t *rps,
    Example: To add an extension called "Zbb" (bitmanip base extension),
    add "zbb" string to the list (all lowercase).
 
-   Keep this list alphabetically ordered.  */
+   first is base extension then keep this list alphabetically ordered.  */
 
 static const char * const riscv_std_z_ext_strtab[] =
   {
-    "zfinx","zicsr", NULL
+    "zicsr","zfinx", NULL
   };
 
 /* Same as `riscv_std_z_ext_strtab', but for S-class extensions.  */
