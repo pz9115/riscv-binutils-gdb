@@ -31,7 +31,6 @@
 #include "elfxx-riscv.h"
 #include "elf/riscv.h"
 #include "opcode/riscv.h"
-
 /* Internal relocations used exclusively by the relaxation pass.  */
 #define R_RISCV_DELETE (R_RISCV_max + 1)
 
@@ -3173,7 +3172,7 @@ _bfd_riscv_elf_merge_private_bfd_data (bfd *ibfd, struct bfd_link_info *info)
     }
 
   /* Disallow linking different float ABIs.  */
-  if ((old_flags ^ new_flags) & EF_RISCV_FLOAT_ABI)
+  if ((old_flags ^ new_flags) & EF_RISCV_FLOAT_ABI & EF_RISCV_ZFINX_ABI)
     {
       (*_bfd_error_handler)
 	(_("%pB: can't link %s modules with %s modules"), ibfd,

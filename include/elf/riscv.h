@@ -102,7 +102,7 @@ END_RELOC_NUMBERS (R_RISCV_max)
 #define EF_RISCV_FLOAT_ABI_SOFT 0x0000
 
 /* File uses the zfinx ABI. */
-#define EF_RISCV_ZFINX_ABI 0x000A
+#define EF_RISCV_ZFINX_ABI 0x0003
 
 /* File uses the single-float ABI.  */
 #define EF_RISCV_FLOAT_ABI_SINGLE 0x0002
