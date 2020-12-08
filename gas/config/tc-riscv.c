@@ -175,6 +175,7 @@ struct riscv_set_options
   int pic; /* Generate position-independent code.  */
   int rvc; /* Generate RVC code.  */
   int rve; /* Generate RVE code.  */
+  int zfinx; /* Generate ZFINX code. */
   int relax; /* Emit relocs the linker is allowed to relax.  */
   int arch_attr; /* Emit arch attribute.  */
   int csr_check; /* Enable the CSR checking.  */
@@ -185,6 +186,7 @@ static struct riscv_set_options riscv_opts =
   0,	/* pic */
   0,	/* rvc */
   0,	/* rve */
+  0,    /* zfinx */
   1,	/* relax */
   DEFAULT_RISCV_ATTR, /* arch_attr */
   0.	/* csr_check */
@@ -203,6 +205,15 @@ static void
 riscv_set_rve (bfd_boolean rve_value)
 {
   riscv_opts.rve = rve_value;
+}
+
+static void
+riscv_set_zfinx (bfd_boolean zfinx_value)
+{
+  if (zfinx_value)
+    elf_flags |= EF_RISCV_ZFINX_ABI;
+
+  riscv_opts.zfinx = zfinx_value;
 }
 
 static riscv_subset_list_t riscv_subsets;
@@ -2648,7 +2659,8 @@ enum float_abi {
   FLOAT_ABI_SOFT,
   FLOAT_ABI_SINGLE,
   FLOAT_ABI_DOUBLE,
-  FLOAT_ABI_QUAD
+  FLOAT_ABI_QUAD,
+  FLOAT_ABI_ZFINX = 10
 };
 static enum float_abi float_abi = FLOAT_ABI_DEFAULT;
 
@@ -2778,6 +2790,11 @@ riscv_after_parse_args (void)
   riscv_set_rve (FALSE);
   if (riscv_subset_supports ("e"))
     riscv_set_rve (TRUE);
+  
+  /* Enable ZFINX if specified by the -march option.  */
+  riscv_set_zfinx (FALSE);
+  if (riscv_subset_supports ("zfinx"))
+    riscv_set_zfinx (TRUE);
 
   /* If the -mpriv-spec isn't set, then we set the default privilege spec
      according to DEFAULT_PRIV_SPEC.  */
@@ -2801,6 +2818,8 @@ riscv_after_parse_args (void)
 
       for (subset = riscv_subsets.head; subset != NULL; subset = subset->next)
 	{
+	  if (strcasecmp (subset->name, "ZFINX") == 0)
+            float_abi = FLOAT_ABI_ZFINX;
 	  if (strcasecmp (subset->name, "D") == 0)
 	    float_abi = FLOAT_ABI_DOUBLE;
 	  if (strcasecmp (subset->name, "Q") == 0)
@@ -2812,7 +2831,7 @@ riscv_after_parse_args (void)
     elf_flags |= EF_RISCV_RVE;
 
   /* Insert float_abi into the EF_RISCV_FLOAT_ABI field of elf_flags.  */
-  elf_flags |= float_abi * (EF_RISCV_FLOAT_ABI & ~(EF_RISCV_FLOAT_ABI << 1));
+  elf_flags |= float_abi * (EF_RISCV_FLOAT_ABI >> 4);
 
   /* If the CIE to be produced has not been overridden on the command line,
      then produce version 3 by default.  This allows us to use the full
