@@ -3172,7 +3172,7 @@ _bfd_riscv_elf_merge_private_bfd_data (bfd *ibfd, struct bfd_link_info *info)
     }
 
   /* Disallow linking different float ABIs.  */
-  if ((old_flags ^ new_flags) & EF_RISCV_FLOAT_ABI && (old_flags != EF_RISCV_ZFINX_ABI))
+  if ((old_flags ^ new_flags) & EF_RISCV_FLOAT_ABI)
     {
       (*_bfd_error_handler)
 	(_("%pB: can't link %s modules with %s modules"), ibfd,

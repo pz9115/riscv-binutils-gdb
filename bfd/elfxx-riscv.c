@@ -1547,12 +1547,12 @@ riscv_parse_subset (riscv_parse_subset_t *rps,
     }
 
   if (riscv_lookup_subset (rps->subset_list, "e")
-      && riscv_lookup_subset (rps->subset_list, "f"))
+      && riscv_lookup_subset (rps->subset_list, "f") && !(riscv_lookup_subset(rps->subset_list, "zfinx")))
     {
-      rps->error_handler
-	(_("-march=%s: rv32e does not support the `f' extension"),
-	 arch);
-      return FALSE;
+        rps->error_handler
+	  (_("-march=%s: rv32e does not support the `f' extension"),
+	   arch);
+        return FALSE;
     }
 
   if (riscv_lookup_subset (rps->subset_list, "d")
