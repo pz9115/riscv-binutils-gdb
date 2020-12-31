@@ -969,6 +969,7 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case 'd':	USE_BITS (OP_MASK_RD,		OP_SH_RD);	break;
       case 'm':	USE_BITS (OP_MASK_RM,		OP_SH_RM);	break;
       case 's':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	break;
+      case 'x': USE_BITS (OP_MASK_RS1,          OP_SH_RS1);     /* fallthru */
       case 't':	USE_BITS (OP_MASK_RS2,		OP_SH_RS2);	break;
       case 'r':	USE_BITS (OP_MASK_RS3,          OP_SH_RS3);     break;
       case 'P':	USE_BITS (OP_MASK_PRED,		OP_SH_PRED); break;
@@ -2280,6 +2281,7 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	    case 'd':		/* Destination register.  */
 	    case 's':		/* Source register.  */
 	    case 't':		/* Target register.  */
+	    case 'x':           /* rs1 and rs2.  */
 	    case 'r':		/* rs3.  */
 	      if (reg_lookup (&s, RCLASS_GPR, &regno))
 		{
@@ -2297,6 +2299,9 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		    case 'd':
 		      INSERT_OPERAND (RD, *ip, regno);
 		      break;
+		    case 'x':
+                      INSERT_OPERAND (RS1, *ip, regno);
+                      /* fallthru */
 		    case 't':
 		      INSERT_OPERAND (RS2, *ip, regno);
 		      break;
