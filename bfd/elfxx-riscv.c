@@ -1095,7 +1095,7 @@ riscv_parsing_subset_version (riscv_parse_subset_t *rps,
 const char *
 riscv_supported_std_ext (void)
 {
-  return "mafdqlcbjtpvn";
+  return "mafdqlcbjtpvnk";
 }
 
 /* Parsing function for standard extensions.
@@ -1425,7 +1425,7 @@ riscv_parse_prefixed_ext (riscv_parse_subset_t *rps,
 
 static const char * const riscv_std_z_ext_strtab[] =
   {
-    "zicsr", NULL
+    "zicsr","zkb","zkg","zkn","zknd","zkne","zknh","zks","zksed","zksh", NULL
   };
 
 /* Same as `riscv_std_z_ext_strtab', but for S-class extensions.  */

@@ -955,6 +955,8 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
       case 's':	USE_BITS (OP_MASK_RS1,		OP_SH_RS1);	break;
       case 't':	USE_BITS (OP_MASK_RS2,		OP_SH_RS2);	break;
       case 'r':	USE_BITS (OP_MASK_RS3,          OP_SH_RS3);     break;
+      case 'y':	USE_BITS (OP_MASK_BS  ,		OP_SH_BS);      break;
+      case 'Y':	USE_BITS (OP_MASK_RCON,		OP_SH_RCON); break;
       case 'P':	USE_BITS (OP_MASK_PRED,		OP_SH_PRED); break;
       case 'Q':	USE_BITS (OP_MASK_SUCC,		OP_SH_SUCC); break;
       case 'o':
@@ -2211,6 +2213,28 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 	      s = expr_end;
 	      continue;
 
+	    case 'y':        /* bs immediate */
+              my_getExpression (imm_expr, s);
+              check_absolute_expr (ip, imm_expr, FALSE);
+              if ((unsigned long)imm_expr->X_add_number > 3)
+		as_bad(_("Improper bs immediate (%lu)"),
+			(unsigned long) imm_expr->X_add_number);
+              INSERT_OPERAND(BS, *ip, imm_expr->X_add_number);
+              imm_expr->X_op = O_absent;
+              s = expr_end;
+              continue;
+
+	    case 'Y':        /* rcon immediate */
+              my_getExpression (imm_expr, s);
+              check_absolute_expr (ip, imm_expr, FALSE);
+              if ((unsigned long)imm_expr->X_add_number > 10)
+                as_bad(_("Improper rcon immediate (%lu)"),
+                        (unsigned long) imm_expr->X_add_number);
+              INSERT_OPERAND(BS, *ip, imm_expr->X_add_number);
+              imm_expr->X_op = O_absent;
+              s = expr_end;
+              continue;
+
 	    case 'Z':		/* CSRRxI immediate.  */
 	      my_getExpression (imm_expr, s);
 	      check_absolute_expr (ip, imm_expr, FALSE);
@@ -2260,6 +2284,8 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		  continue;
 		}
 	      break;
+
+
 
 	    case 'd':		/* Destination register.  */
 	    case 's':		/* Source register.  */

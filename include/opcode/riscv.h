@@ -256,6 +256,13 @@ static const char * const riscv_pred_succ[16] =
 #define OP_MASK_CFUNCT2                0x3
 #define OP_SH_CFUNCT2          5
 
+/* RVK fields. */
+
+#define OP_SH_BS        30
+#define OP_MASK_BS      3 
+#define OP_SH_RCON      20
+#define OP_MASK_RCON    0xf
+
 /* ABI names for selected x-registers.  */
 
 #define X_RA 1
