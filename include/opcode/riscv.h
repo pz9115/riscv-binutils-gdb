@@ -307,10 +307,14 @@ enum riscv_insn_class
    INSN_CLASS_F,
    INSN_CLASS_D,
    INSN_CLASS_ZFINX,
+   INSN_CLASS_ZDINX,
    INSN_CLASS_D_AND_C,
    INSN_CLASS_F_AND_C,
    INSN_CLASS_ZFINX_AND_C,
+   INSN_CLASS_ZDINX_AND_C,
    INSN_CLASS_Q,
+   INSN_CLASS_ZQINX,
+   INSN_CLASS_ZQINX_AND_C,
   };
 
 /* This structure holds information for a particular instruction.  */

@@ -176,6 +176,7 @@ struct riscv_set_options
   int rvc; /* Generate RVC code.  */
   int rve; /* Generate RVE code.  */
   int zfinx; /* Generate ZFINX code. */
+  int zdinx; /* Generate ZDINX code. */
   int relax; /* Emit relocs the linker is allowed to relax.  */
   int arch_attr; /* Emit arch attribute.  */
   int csr_check; /* Enable the CSR checking.  */
@@ -187,6 +188,7 @@ static struct riscv_set_options riscv_opts =
   0,	/* rvc */
   0,	/* rve */
   0,    /* zfinx */
+  0,    /* zdinx */
   1,	/* relax */
   DEFAULT_RISCV_ATTR, /* arch_attr */
   0.	/* csr_check */
@@ -216,6 +218,15 @@ riscv_set_zfinx (bfd_boolean zfinx_value)
   riscv_opts.zfinx = zfinx_value;
 }
 
+static void
+riscv_set_zdinx (bfd_boolean zdinx_value)
+{
+  if (zdinx_value)
+    elf_flags |= EF_RISCV_ZDINX_ABI;
+
+  riscv_opts.zdinx = zdinx_value;
+}
+
 static riscv_subset_list_t riscv_subsets;
 
 static bfd_boolean
@@ -239,6 +250,7 @@ riscv_multi_subset_supports (enum riscv_insn_class insn_class)
     case INSN_CLASS_F: return riscv_subset_supports ("f");
     case INSN_CLASS_D: return riscv_subset_supports ("d");
     case INSN_CLASS_ZFINX: return riscv_subset_supports ("zfinx");
+    case INSN_CLASS_ZDINX: return riscv_subset_supports ("zdinx");
     
     case INSN_CLASS_D_AND_C:
       return riscv_subset_supports ("d") && riscv_subset_supports ("c");
@@ -246,10 +258,15 @@ riscv_multi_subset_supports (enum riscv_insn_class insn_class)
     case INSN_CLASS_F_AND_C:
       return riscv_subset_supports ("f") && riscv_subset_supports ("c");
 
+    case INSN_CLASS_ZDINX_AND_C:
+      return riscv_subset_supports ("zdinx") && riscv_subset_supports ("c");
+
     case INSN_CLASS_ZFINX_AND_C:
       return riscv_subset_supports ("zfinx") && riscv_subset_supports ("c");
 
     case INSN_CLASS_Q: return riscv_subset_supports ("q");
+
+    case INSN_CLASS_ZQINX: return riscv_subset_supports ("zqinx");
 
     default:
       as_fatal ("Unreachable");
@@ -2665,7 +2682,9 @@ enum float_abi {
   FLOAT_ABI_SINGLE,
   FLOAT_ABI_DOUBLE,
   FLOAT_ABI_QUAD,
-  FLOAT_ABI_ZFINX = 10
+  FLOAT_ABI_ZFINX = 22,
+  FLOAT_ABI_ZDINX = 24,
+  FLOAT_ABI_ZQINX = 26,
 };
 static enum float_abi float_abi = FLOAT_ABI_DEFAULT;
 
@@ -2801,6 +2820,10 @@ riscv_after_parse_args (void)
   if (riscv_subset_supports ("zfinx"))
     riscv_set_zfinx (TRUE);
 
+  riscv_set_zdinx (FALSE);  
+  if (riscv_subset_supports ("zdinx"))  
+    riscv_set_zdinx(TRUE);
+
   /* If the -mpriv-spec isn't set, then we set the default privilege spec
      according to DEFAULT_PRIV_SPEC.  */
   if (default_priv_spec == PRIV_SPEC_CLASS_NONE)
@@ -2825,6 +2848,10 @@ riscv_after_parse_args (void)
 	{
 	  if (strcasecmp (subset->name, "ZFINX") == 0)
             float_abi = FLOAT_ABI_ZFINX;
+	  if (strcasecmp (subset->name, "ZDINX") == 0)
+            float_abi = FLOAT_ABI_ZDINX;
+          if (strcasecmp (subset->name, "ZQINX") == 0)
+            float_abi = FLOAT_ABI_ZQINX;
 	  if (strcasecmp (subset->name, "D") == 0)
 	    float_abi = FLOAT_ABI_DOUBLE;
 	  if (strcasecmp (subset->name, "Q") == 0)

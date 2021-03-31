@@ -101,9 +101,6 @@ END_RELOC_NUMBERS (R_RISCV_max)
 /* File uses the soft-float ABI.  */
 #define EF_RISCV_FLOAT_ABI_SOFT 0x0000
 
-/* File uses the zfinx ABI. */
-#define EF_RISCV_ZFINX_ABI 0x0020
-
 /* File uses the single-float ABI.  */
 #define EF_RISCV_FLOAT_ABI_SINGLE 0x0002
 
@@ -115,6 +112,18 @@ END_RELOC_NUMBERS (R_RISCV_max)
 
 /* File uses the 32E base integer instruction.  */
 #define EF_RISCV_RVE 0x0008
+
+/* File uses the inx ABI. */
+#define EF_RISCV_INX_ABI 0x0020
+
+/* File uses the zfinx ABI. */
+#define EF_RISCV_ZFINX_ABI (EF_RISCV_INX_ABI|EF_RISCV_FLOAT_ABI_SINGLE)
+
+/* File uses the zfinx ABI. */
+#define EF_RISCV_ZDINX_ABI (EF_RISCV_INX_ABI|EF_RISCV_FLOAT_ABI_DOUBLE)
+
+/* File uses the zfinx ABI. */
+#define EF_RISCV_ZQINX_ABI (EF_RISCV_INX_ABI|EF_RISCV_FLOAT_ABI_QUAD)
 
 /* The name of the global pointer symbol.  */
 #define RISCV_GP_SYMBOL "__global_pointer$"
