@@ -1382,12 +1382,15 @@ riscv_parse_prefixed_ext (riscv_parse_subset_t *rps,
       if (!strncasecmp (last_name, config->prefix, 1)
 	  && strcasecmp (last_name, subset) > 0)
 	{
-	  rps->error_handler
-	    (_("\
+	  /* Zdinx is same as d imply f */
+	  if(strcasecmp(subset,"zdinx") != 0){
+	    rps->error_handler
+	      (_("\
 -march=%s: %s ISA extension not in alphabetical order: \'%s\' must come before \'%s\'."),
-	     march, config->prefix, subset, last_name);
-	  free (subset);
-	  return NULL;
+	       march, config->prefix, subset, last_name);
+	    free (subset);
+	    return NULL;
+	  }
 	}
 
       /* Find the default version if needed.  */
@@ -1425,7 +1428,7 @@ riscv_parse_prefixed_ext (riscv_parse_subset_t *rps,
 
 static const char * const riscv_std_z_ext_strtab[] =
   {
-    "zicsr","zdinx","zfinx","zqinx", NULL
+    "zicsr", "zfinx", "zdinx", "zqinx", NULL
   };
 
 /* Same as `riscv_std_z_ext_strtab', but for S-class extensions.  */
