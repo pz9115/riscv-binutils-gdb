@@ -484,7 +484,7 @@ riscv_disassemble_insn (bfd_vma memaddr, insn_t word, disassemble_info *info)
 	  xlen = ehdr->e_ident[EI_CLASS] == ELFCLASS64 ? 64 : 32;
 	}
       /* If ELF has Z*INX flags, use gpr for disassemble.  */
-      if (ehdr->e_flags == EF_RISCV_ZFINX_ABI){
+      if ((ehdr->e_flags & EF_RISCV_INX_ABI) == EF_RISCV_INX_ABI){
       	riscv_fpr_names = riscv_gpr_names_abi;
       }
 

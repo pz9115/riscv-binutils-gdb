@@ -2601,13 +2601,13 @@ riscv_float_abi_string (flagword flags)
       return "quad-float";
       break;
     case EF_RISCV_ZFINX_ABI:
-      return "zfinx";
+      return "ZFINX";
       break;
     case EF_RISCV_ZDINX_ABI:
-      return "zdinx";
+      return "ZDINX";
       break;
     case EF_RISCV_ZQINX_ABI:
-      return "zqinx";
+      return "ZQINX";
       break;
     default:
       abort ();

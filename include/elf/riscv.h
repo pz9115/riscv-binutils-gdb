@@ -117,13 +117,13 @@ END_RELOC_NUMBERS (R_RISCV_max)
 #define EF_RISCV_INX_ABI 0x0020
 
 /* File uses the zfinx ABI. */
-#define EF_RISCV_ZFINX_ABI (EF_RISCV_INX_ABI|EF_RISCV_FLOAT_ABI_SINGLE)
+#define EF_RISCV_ZFINX_ABI 0x0022
 
 /* File uses the zfinx ABI. */
-#define EF_RISCV_ZDINX_ABI (EF_RISCV_INX_ABI|EF_RISCV_FLOAT_ABI_DOUBLE)
+#define EF_RISCV_ZDINX_ABI 0x0024
 
 /* File uses the zfinx ABI. */
-#define EF_RISCV_ZQINX_ABI (EF_RISCV_INX_ABI|EF_RISCV_FLOAT_ABI_QUAD)
+#define EF_RISCV_ZQINX_ABI 0x0026
 
 /* The name of the global pointer symbol.  */
 #define RISCV_GP_SYMBOL "__global_pointer$"

@@ -175,8 +175,6 @@ struct riscv_set_options
   int pic; /* Generate position-independent code.  */
   int rvc; /* Generate RVC code.  */
   int rve; /* Generate RVE code.  */
-  int zfinx; /* Generate ZFINX code. */
-  int zdinx; /* Generate ZDINX code. */
   int relax; /* Emit relocs the linker is allowed to relax.  */
   int arch_attr; /* Emit arch attribute.  */
   int csr_check; /* Enable the CSR checking.  */
@@ -187,8 +185,6 @@ static struct riscv_set_options riscv_opts =
   0,	/* pic */
   0,	/* rvc */
   0,	/* rve */
-  0,    /* zfinx */
-  0,    /* zdinx */
   1,	/* relax */
   DEFAULT_RISCV_ATTR, /* arch_attr */
   0.	/* csr_check */
@@ -207,24 +203,6 @@ static void
 riscv_set_rve (bfd_boolean rve_value)
 {
   riscv_opts.rve = rve_value;
-}
-
-static void
-riscv_set_zfinx (bfd_boolean zfinx_value)
-{
-  if (zfinx_value)
-    elf_flags |= EF_RISCV_ZFINX_ABI;
-
-  riscv_opts.zfinx = zfinx_value;
-}
-
-static void
-riscv_set_zdinx (bfd_boolean zdinx_value)
-{
-  if (zdinx_value)
-    elf_flags |= EF_RISCV_ZDINX_ABI;
-
-  riscv_opts.zdinx = zdinx_value;
 }
 
 static riscv_subset_list_t riscv_subsets;
@@ -2682,9 +2660,9 @@ enum float_abi {
   FLOAT_ABI_SINGLE,
   FLOAT_ABI_DOUBLE,
   FLOAT_ABI_QUAD,
-  FLOAT_ABI_ZFINX = 22,
-  FLOAT_ABI_ZDINX = 24,
-  FLOAT_ABI_ZQINX = 26,
+  FLOAT_ABI_ZFINX = 17,
+  FLOAT_ABI_ZDINX = 18,
+  FLOAT_ABI_ZQINX = 19,
 };
 static enum float_abi float_abi = FLOAT_ABI_DEFAULT;
 
@@ -2815,14 +2793,9 @@ riscv_after_parse_args (void)
   if (riscv_subset_supports ("e"))
     riscv_set_rve (TRUE);
   
-  /* Enable ZFINX if specified by the -march option.  */
-  riscv_set_zfinx (FALSE);
+  /* Enable Z*INX if specified by the -march option.  */
   if (riscv_subset_supports ("zfinx"))
-    riscv_set_zfinx (TRUE);
-
-  riscv_set_zdinx (FALSE);  
-  if (riscv_subset_supports ("zdinx"))  
-    riscv_set_zdinx(TRUE);
+    float_abi = FLOAT_ABI_DEFAULT;
 
   /* If the -mpriv-spec isn't set, then we set the default privilege spec
      according to DEFAULT_PRIV_SPEC.  */
@@ -2845,18 +2818,18 @@ riscv_after_parse_args (void)
       float_abi = FLOAT_ABI_SOFT;
 
       for (subset = riscv_subsets.head; subset != NULL; subset = subset->next)
-	{
-	  if (strcasecmp (subset->name, "ZFINX") == 0)
-            float_abi = FLOAT_ABI_ZFINX;
-	  if (strcasecmp (subset->name, "ZDINX") == 0)
-            float_abi = FLOAT_ABI_ZDINX;
-          if (strcasecmp (subset->name, "ZQINX") == 0)
-            float_abi = FLOAT_ABI_ZQINX;
-	  if (strcasecmp (subset->name, "D") == 0)
-	    float_abi = FLOAT_ABI_DOUBLE;
-	  if (strcasecmp (subset->name, "Q") == 0)
-	    float_abi = FLOAT_ABI_QUAD;
-	}
+	      {
+	        if (strcasecmp (subset->name, "D") == 0)
+	          float_abi = FLOAT_ABI_DOUBLE;
+	        if (strcasecmp (subset->name, "Q") == 0)
+	          float_abi = FLOAT_ABI_QUAD;
+	        if (strcasecmp (subset->name, "ZFINX") == 0)
+	          float_abi = FLOAT_ABI_ZFINX;
+	        if (strcasecmp (subset->name, "ZDINX") == 0)
+	          float_abi = FLOAT_ABI_ZDINX;
+	        if (strcasecmp (subset->name, "ZQINX") == 0)
+	          float_abi = FLOAT_ABI_ZQINX;
+	      }
     }
 
   if (rve_abi)
