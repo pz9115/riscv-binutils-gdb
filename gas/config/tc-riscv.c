@@ -985,10 +985,10 @@ arg_lookup (char **s, const char *const *array, size_t size, unsigned *regnop)
   return FALSE;
 }
 
-#define MAX_KEYWORD_LEN 32
+#define RVP_MAX_KEYWORD_LEN 32
 
 static bfd_boolean
-parse_nds_v5_field (const char **str, char name[MAX_KEYWORD_LEN])
+parse_rvp_field (const char **str, char name[RVP_MAX_KEYWORD_LEN])
 {
   char *p = name;
   const char *str_t;
@@ -1156,8 +1156,8 @@ validate_riscv_insn (const struct riscv_opcode *opc, int length)
 	break;
       case 'n':
       {
-        char field_name[MAX_KEYWORD_LEN];
-        if (parse_nds_v5_field (&p, field_name))
+        char field_name[RVP_MAX_KEYWORD_LEN];
+        if (parse_rvp_field (&p, field_name))
           {
             if (strcmp (field_name, "nds_rc") == 0)
         USE_BITS (OP_MASK_RC, OP_SH_RC);
@@ -2472,17 +2472,16 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		}
 	      continue;
 
-            case 'l':
+	    case 'l':
 	      my_getExpression (imm_expr, s);
 	      if (imm_expr->X_op != O_constant
-		  || imm_expr->X_add_number >= xlen
-		  || imm_expr->X_add_number < 0)
-		break;
-	      ip->insn_opcode |= ENCODE_SBTYPE_IMM6L (imm_expr->X_add_number);
+	      || imm_expr->X_add_number >= xlen
+	      || imm_expr->X_add_number < 0)
+	        break;
+	      ip->insn_opcode |= ENCODE_ITYPE_IMM6L (imm_expr->X_add_number);
 	      s = expr_end;
 	      imm_expr->X_op = O_absent;
 	      continue;
-
 
 	    case 'm': /* Rounding mode.  */
 	      if (arg_lookup (&s, riscv_rm, ARRAY_SIZE (riscv_rm), &regno))
@@ -2492,11 +2491,11 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		}
 	      break;
 
-            case 'n':
+      case 'n':
 	      {
-		char field_name[MAX_KEYWORD_LEN];
+		char field_name[RVP_MAX_KEYWORD_LEN];
 		args++;
-		if (parse_nds_v5_field (&args, field_name))
+		if (parse_rvp_field (&args, field_name))
 		  {
 		    if (strcmp (field_name, "nds_rc") == 0
 			&& reg_lookup (&s, RCLASS_GPR, &regno))
@@ -2510,8 +2509,8 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      {
 			if (xlen == 32 && (regno % 2) != 0)
 			  {
-			    as_bad (_("The number of Rd must be even "
-				      "(limitation of register pair)."));
+			    as_bad (_("the number of Rd must be even "
+				      "(limitation of register pair)"));
 			    break;
 			  }
 			INSERT_OPERAND (RD, *ip, regno);
@@ -2523,8 +2522,8 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      {
 			if (xlen == 32 && (regno % 2) != 0)
 			  {
-			    as_bad (_("The number of Rs1 must be even "
-				      "(limitation of register pair)."));
+			    as_bad (_("the number of Rs1 must be even "
+				      "(limitation of register pair)"));
 			    break;
 			  }
 			INSERT_OPERAND (RS1, *ip, regno);
@@ -2536,8 +2535,8 @@ riscv_ip (char *str, struct riscv_cl_insn *ip, expressionS *imm_expr,
 		      {
 			if (xlen == 32 && (regno % 2) != 0)
 			  {
-			    as_bad (_("The number of Rs2 must be even "
-				      "(limitation of register pair)."));
+			    as_bad (_("the number of Rs2 must be even "
+				      "(limitation of register pair)"));
 			    break;
 			  }
 			INSERT_OPERAND (RS2, *ip, regno);

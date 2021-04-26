@@ -164,7 +164,7 @@ static const char * const riscv_pred_succ[16] =
   (RV_X(x, 0, 6) << 20)
 #define ENCODE_PTYPE_IMM15S(x) \
   ((RV_X(x, 0, 5) << 7) | RV_X(x, 5, 10) << 15)
-#define ENCODE_SBTYPE_IMM6L(x) \
+#define ENCODE_ITYPE_IMM6L(x) \
   (RV_X(x, 0, 6) << 20)
 
 #define VALID_ITYPE_IMM(x) (EXTRACT_ITYPE_IMM(ENCODE_ITYPE_IMM(x)) == (x))

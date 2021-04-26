@@ -164,10 +164,10 @@ maybe_print_address (struct riscv_private_data *pd, int base_reg, int offset)
     pd->print_addr = offset;
 }
 
-#define MAX_KEYWORD_LEN 32
+#define RVP_MAX_KEYWORD_LEN 32
 
 static bfd_boolean
-parse_nds_v5_field (const char **str, char name[MAX_KEYWORD_LEN])
+parse_rvp_field (const char **str, char name[RVP_MAX_KEYWORD_LEN])
 {
   char *p = name;
   const char *str_t;
@@ -337,8 +337,8 @@ print_insn_args (const char *d, insn_t l, bfd_vma pc, disassemble_info *info)
 	case 'n':
 	  {
 	    d++;
-	    char field_name[MAX_KEYWORD_LEN];
-	    if (parse_nds_v5_field (&d, field_name))
+	    char field_name[RVP_MAX_KEYWORD_LEN];
+	    if (parse_rvp_field (&d, field_name))
 	      {
 		if (strcmp (field_name, "nds_rc") == 0)
 		  print (info->stream, "%s",
